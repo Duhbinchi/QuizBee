@@ -140,6 +140,7 @@ class GameWindow(Tk):
 
 
     def checkAnswer(self, selectedAnswer):
+        # Based sa dictionary
         currentQuestion = list(self.questionDict.keys())[self.counter]
         correctAnswer = self.questionDict[currentQuestion]['optA']  # A is always the correct answer
     
