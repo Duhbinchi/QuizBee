@@ -7,7 +7,6 @@ TO DO (base requirements):
 - Handling this: For some reason, the hp 0 is a jpg file ??
 
 Suggestions / Comments / Questions:
-- Remove the title bar in the Login Window and Game Window / Window Resizable to False
 - Make it into OOP-like more in a sense more functions and the code is more organized
 - Shuffle the questions order as well?
 - Font for the Login = Arial 20 bold
@@ -25,21 +24,24 @@ import random
 class ITQuizBeeLogin(Tk):
     def __init__(self):
         super().__init__()
+        self.resizable(False, False)
 
         self.title("Log In")
         self.labelLog = Label(self)
+        self.inputFont = ('Arial', 8)
 
         self.photoLogInImage = PhotoImage(file='logIN20.png')
         self.photoButtonOK = PhotoImage(file='OK20.png')
         self.labelLog.config(image=self.photoLogInImage)
 
         # Name and Password
-        self.entryTxtUname = Entry(self, fg='white', bg='brown', width=28)
-        self.entryTxtPw = Entry(self, fg='white', bg='brown', width=28, show="*")  # Hides password input
+        self.entryTxtUname = Entry(self, fg='white', bg='brown', width=28, font=self.inputFont)
+        self.entryTxtPw = Entry(self, fg='white', bg='brown', width=28, font=self.inputFont, show="*")  # Hides password input
 
         # Buttons
         self.btnQuit = Button(self, text='x', command=self.exit)
         self.btnOk = Button(self, image=self.photoButtonOK, bg='lime', command=self.validate)
+        self.bind('<Return>', self.validate)
 
         # Placement
         self.labelLog.pack()
@@ -54,7 +56,7 @@ class ITQuizBeeLogin(Tk):
         if messagebox.askokcancel:
             self.destroy()
 
-    def validate(self):
+    def validate(self, event=None): # event=None is for the bind function
         enteredUsername = self.entryTxtUname.get().strip()  
         enteredPassword = self.entryTxtPw.get().strip()    
 
@@ -87,9 +89,11 @@ class ITQuizBeeLogin(Tk):
 class GameWindow(Tk):
     def __init__(self):
         super().__init__()
+        
+        self.resizable(False, False)
 
         self.title("IT Quiz Bee")
-        self.counter = 0  
+        self.counter = -1 # Counter for the questions
         self.hp = 5
 
         self.questionDict = {}
@@ -115,27 +119,19 @@ class GameWindow(Tk):
         self.hpLabel.config(image=self.photoHP)
 
         # Button and Questions
-        firstQuestion = list(self.questionDict.keys())[0]  # Get the first question key
-        firstChoiceA = self.questionDict[firstQuestion]['optA']
-        firstChoiceB = self.questionDict[firstQuestion]['optB']
-        firstChoiceC = self.questionDict[firstQuestion]['optC']
-        firstChoiceD = self.questionDict[firstQuestion]['optD']
-        
-        self.labelQuestion = Label(self.gameFrame, text=self.questionDict[firstQuestion]['question'],  font='Arial 20 bold', fg='white', height=7, bg='orange', justify=CENTER, wraplength=400)
-        self.answerButtonA = Button(self.gameFrame, text=firstChoiceA, font='Arial 20 bold', bg='brown', fg='white', activebackground='lime', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optA']))
-        self.answerButtonB = Button(self.gameFrame, text=firstChoiceB, font='Arial 20 bold', bg='brown', fg='white', activebackground='red', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optB']))
-        self.answerButtonC = Button(self.gameFrame, text=firstChoiceC, font='Arial 20 bold', bg='brown', fg='white', activebackground='red', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optC']))
-        self.answerButtonD = Button(self.gameFrame, text=firstChoiceD, font='Arial 20 bold', bg='brown', fg='white', activebackground='red', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optD']))
+        self.labelQuestion = Label(self.gameFrame,  font='Arial 20 bold', fg='white', height=7, bg='orange', justify=CENTER, wraplength=400)
+        self.answerButtonA = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='lime', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optA']))
+        self.answerButtonB = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='red', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optB']))
+        self.answerButtonC = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='red', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optC']))
+        self.answerButtonD = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='red', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optD']))
         
         # Placement
         self.labelGame.pack()
         self.gameFrame.place(x=186, y=65, anchor=NW)
         self.hpLabel.pack(side=TOP)
         self.labelQuestion.pack(side=TOP)
-
         buttonList = [self.answerButtonA, self.answerButtonB, self.answerButtonC, self.answerButtonD]
-        
-        self.shuffleAndPackButtons(buttonList)
+        self.nextQuestion()  # Call nextQuestion to display the first question
 
 
     # Functions
@@ -185,6 +181,7 @@ class GameWindow(Tk):
             currentQuestionKey = list(self.questionDict.keys())[self.counter]
             currentQuestion = self.questionDict[currentQuestionKey]
 
+            # Medyo nakakalito, but based to so dictionary
             self.labelQuestion.config(text=currentQuestion['question'])
 
             # Update buttons appropriate commands... because earlier, the commands were set to the first question only
@@ -211,6 +208,7 @@ class GameWindow(Tk):
         except IndexError:
             self.counter = 0
             messagebox.showinfo("Start Over", "Quiz is reset to the first question.")
+            # TBC
 
         
 if __name__ == "__main__":
