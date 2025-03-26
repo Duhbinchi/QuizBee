@@ -1,7 +1,9 @@
 """
+Note: Username = TechWizard and Password = admin
+
 TO DO (base requirements): 
 - Score System
-- Login
+- Login (check if working)
 - Handling this: For some reason, the hp 0 is a jpg file ??
 
 Suggestions / Comments / Questions:
@@ -13,8 +15,9 @@ Suggestions / Comments / Questions:
 
 
 from tkinter import *
-import random
 from tkinter import messagebox
+import hashlib
+import random
 
 class ITQuizBeeLogin(Tk):
     def __init__(self):
@@ -27,33 +30,57 @@ class ITQuizBeeLogin(Tk):
         self.photoButtonOK = PhotoImage(file='OK20.png')
         self.labelLog.config(image=self.photoLogInImage)
 
-        # Name
-        self.entryTxtUname = Entry(self, fg='white',bg='brown', width=28)
-        self.entryTxtPw = Entry(self, fg='white',bg='brown',width=28) # HIDE
-
+        # Name and Password
+        self.entryTxtUname = Entry(self, fg='white', bg='brown', width=28)
+        self.entryTxtPw = Entry(self, fg='white', bg='brown', width=28, show="*")  # Hides password input
 
         # Buttons
         self.btnQuit = Button(self, text='x', command=self.exit)
-        self.btnOk = Button(self, image=self.photoButtonOK, bg='lime',command=self.validate)
+        self.btnOk = Button(self, image=self.photoButtonOK, bg='lime', command=self.validate)
 
         # Placement
         self.labelLog.pack()
+        self.entryTxtUname.place(x=35, y=101)
+        self.entryTxtPw.place(x=35, y=161)
+        self.btnQuit.place(x=195, y=30)
+        self.btnOk.place(x=97, y=191)
 
-        self.entryTxtUname.place(x=35,y=101)
-        self.entryTxtPw.place(x=35,y=161)
-
-        self.btnQuit.place(x=195,y=30)
-        self.btnOk.place(x=97,y=191)
-
-    
+    # Functions
     def exit(self):
-        pass
+        messagebox.askokcancel("Quit", "Are you sure you want to quit?")
+        if messagebox.askokcancel:
+            self.destroy()
 
     def validate(self):
-        # open the game window
-        self.destroy()
-        game = GameWindow()
-        game.mainloop()
+        enteredUsername = self.entryTxtUname.get().strip()  
+        enteredPassword = self.entryTxtPw.get().strip()    
+
+        logInDict = {}
+        try:
+            with open("UserAccount.txt", "r") as file:
+                for line in file:
+                    line = line.strip()
+                    if line:
+                        parts = line.split(";")
+                        if len(parts) >= 2:
+                            username = parts[0].strip()
+                            stored_password = parts[1].strip()
+                            logInDict[username] = stored_password
+                        else:
+                            print(f"Skipping malformed line: {line}")
+
+        except FileNotFoundError:
+            messagebox.showerror("Error", "No user accounts found. Please register first.")
+            return
+
+        if enteredUsername in logInDict and logInDict[enteredUsername] == enteredPassword:
+            messagebox.showinfo("Login Successful", "Welcome!")
+            self.destroy()
+            game = GameWindow()
+            game.mainloop()
+        else:
+            messagebox.showerror("Login Failed", "Invalid username or password.")
+
 
 
 class GameWindow(Tk):
@@ -159,7 +186,7 @@ class GameWindow(Tk):
 
             self.labelQuestion.config(text=currentQuestion['question'])
 
-            # Update buttons appropriate commands because earlier, the commands were set to the first question only
+            # Update buttons appropriate commands... because earlier, the commands were set to the first question only
             newButtons = [
                 (self.answerButtonA, currentQuestion['optA'], currentQuestion['optA']),
                 (self.answerButtonB, currentQuestion['optB'], currentQuestion['optB']),
