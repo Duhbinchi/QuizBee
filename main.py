@@ -3,12 +3,15 @@ Note: Username = TechWizard and Password = admin
 
 TO DO (base requirements): 
 - Score System
-- Login (check if working)
+- Login Dict should not create the dictionaty inside the validate function, instead create it in the __init__ function
+- Testing
 
 Suggestions / Comments / Questions:
 - Make it into OOP-like more in a sense more functions and the code is more organized
 - HP bar has a white space when changed idk why
 - Reason: Some images have transparent background, some don't...
+- Note: "Add kayo dito if you have any suggestions or comments"
+
 """
 
 
