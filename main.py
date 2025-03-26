@@ -119,17 +119,16 @@ class GameWindow(Tk):
 
         # Button and Questions
         self.labelQuestion = Label(self.gameFrame,  font='Arial 20 bold', fg='white', height=7, bg='orange', justify=CENTER, wraplength=400)
-        self.answerButtonA = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='lime', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optA']))
-        self.answerButtonB = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='red', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optB']))
-        self.answerButtonC = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='red', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optC']))
-        self.answerButtonD = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='red', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optD']))
+        self.answerButtonA = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='lime')
+        self.answerButtonB = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='red')
+        self.answerButtonC = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='red')
+        self.answerButtonD = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='red')
         
         # Placement
         self.labelGame.pack()
         self.gameFrame.place(x=186, y=65, anchor=NW)
         self.hpLabel.pack(side=TOP)
         self.labelQuestion.pack(side=TOP)
-        buttonList = [self.answerButtonA, self.answerButtonB, self.answerButtonC, self.answerButtonD]
         self.nextQuestion()  # Call nextQuestion to display the first question
 
 
