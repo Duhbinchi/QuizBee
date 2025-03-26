@@ -155,8 +155,7 @@ class GameWindow(Tk):
         # Check if the game is over
         if self.hp == 0:
             self.healthStatus(self.hp)
-            messagebox.showinfo("Game Over", "You ran out of health points. Game Over.")
-            self.destroy()
+            self.gameOver(self.hp)
         else:
             self.nextQuestion()
 
@@ -206,9 +205,21 @@ class GameWindow(Tk):
                 btn.pack(fill=X)
     
         except IndexError:
-            self.counter = 0
-            messagebox.showinfo("Start Over", "Quiz is reset to the first question.")
-            # TBC
+            self.gameOver(self.hp)
+
+    
+    def gameOver(self, hp ):
+        if hp == 0:
+            messagebox.showerror("Game Over - Ran out of HP", "You ran out of health points. Game Over.")
+        else:
+            messagebox.showinfo("Finished!", "You have completed the quiz!")
+            self.showScore()
+
+        self.destroy()
+
+    
+    def showScore(self):
+        pass
 
         
 if __name__ == "__main__":
