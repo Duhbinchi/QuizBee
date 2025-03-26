@@ -10,13 +10,16 @@ Suggestions / Comments / Questions:
 - Remove the title bar in the Login Window and Game Window / Window Resizable to False
 - Make it into OOP-like more in a sense more functions and the code is more organized
 - Shuffle the questions order as well?
+- Font for the Login = Arial 20 bold
+- Bind Enter key to the OK button
+
 - HP bar has a white space when changed idk why
+- Reason: Some images have transparent background, some don't...
 """
 
 
 from tkinter import *
 from tkinter import messagebox
-import hashlib
 import random
 
 class ITQuizBeeLogin(Tk):
@@ -66,8 +69,6 @@ class ITQuizBeeLogin(Tk):
                             username = parts[0].strip()
                             stored_password = parts[1].strip()
                             logInDict[username] = stored_password
-                        else:
-                            print(f"Skipping malformed line: {line}")
 
         except FileNotFoundError:
             messagebox.showerror("Error", "No user accounts found. Please register first.")
@@ -121,10 +122,10 @@ class GameWindow(Tk):
         firstChoiceD = self.questionDict[firstQuestion]['optD']
         
         self.labelQuestion = Label(self.gameFrame, text=self.questionDict[firstQuestion]['question'],  font='Arial 20 bold', fg='white', height=7, bg='orange', justify=CENTER, wraplength=400)
-        self.answerButtonA = Button(self.gameFrame, text=firstChoiceA, font='Arial 20 bold', bg='brown', fg='white', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optA']))
-        self.answerButtonB = Button(self.gameFrame, text=firstChoiceB, font='Arial 20 bold', bg='brown', fg='white', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optB']))
-        self.answerButtonC = Button(self.gameFrame, text=firstChoiceC, font='Arial 20 bold', bg='brown', fg='white', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optC']))
-        self.answerButtonD = Button(self.gameFrame, text=firstChoiceD, font='Arial 20 bold', bg='brown', fg='white', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optD']))
+        self.answerButtonA = Button(self.gameFrame, text=firstChoiceA, font='Arial 20 bold', bg='brown', fg='white', activebackground='lime', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optA']))
+        self.answerButtonB = Button(self.gameFrame, text=firstChoiceB, font='Arial 20 bold', bg='brown', fg='white', activebackground='red', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optB']))
+        self.answerButtonC = Button(self.gameFrame, text=firstChoiceC, font='Arial 20 bold', bg='brown', fg='white', activebackground='red', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optC']))
+        self.answerButtonD = Button(self.gameFrame, text=firstChoiceD, font='Arial 20 bold', bg='brown', fg='white', activebackground='red', command=lambda: self.checkAnswer(self.questionDict[firstQuestion]['optD']))
         
         # Placement
         self.labelGame.pack()
