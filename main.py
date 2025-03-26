@@ -4,14 +4,9 @@ Note: Username = TechWizard and Password = admin
 TO DO (base requirements): 
 - Score System
 - Login (check if working)
-- Handling this: For some reason, the hp 0 is a jpg file ??
 
 Suggestions / Comments / Questions:
 - Make it into OOP-like more in a sense more functions and the code is more organized
-- Shuffle the questions order as well?
-- Font for the Login = Arial 20 bold
-- Bind Enter key to the OK button
-
 - HP bar has a white space when changed idk why
 - Reason: Some images have transparent background, some don't...
 """
@@ -19,6 +14,7 @@ Suggestions / Comments / Questions:
 
 from tkinter import *
 from tkinter import messagebox
+import winsound
 import random
 
 class ITQuizBeeLogin(Tk):
@@ -62,15 +58,15 @@ class ITQuizBeeLogin(Tk):
 
         logInDict = {}
         try:
-            with open("UserAccount.txt", "r") as file:
-                for line in file:
+            with open("UserAccount.txt", "r") as f:
+                for line in f:
                     line = line.strip()
-                    if line:
-                        parts = line.split(";")
-                        if len(parts) >= 2:
-                            username = parts[0].strip()
-                            stored_password = parts[1].strip()
-                            logInDict[username] = stored_password
+                    parts = line.split(";")
+                    
+                    if len(parts) >= 2:
+                        username = parts[0].strip()
+                        storedPassword = parts[1].strip()
+                        logInDict[username] = storedPassword
 
         except FileNotFoundError:
             messagebox.showerror("Error", "No user accounts found. Please register first.")
@@ -146,10 +142,10 @@ class GameWindow(Tk):
         correctAnswer = self.questionDict[currentQuestion]['optA']  # A is always the correct answer
     
         if selectedAnswer == correctAnswer:
-            messagebox.showinfo("Correct!", "You selected the correct answer!")
+            winsound.MessageBeep(winsound.MB_ICONASTERISK)
             self.hp = min(self.hp + 1, 5) # HP cannot exceed 5
         else:
-            messagebox.showerror("Wrong!", "That's not the correct answer.")
+            winsound.MessageBeep(winsound.MB_ICONHAND)
             self.hp = max(self.hp - 1, 0) # HP cannot be negative
     
         # Check if the game is over
@@ -168,7 +164,7 @@ class GameWindow(Tk):
             self.photoHP.config(file=f'hp{hp}.png')  
         except:
             pass
-            # self.photoHP.config(file='hp0.jpg')  # For some reason, the hp 0 is a jpg file ???
+            # self.photoHP.config(file='hp0.jpg')  and for some reason, the hp 0 is a jpg file ???
 
         self.hpLabel.config(image=self.photoHP, bg='orange')
 
@@ -180,7 +176,7 @@ class GameWindow(Tk):
             currentQuestionKey = list(self.questionDict.keys())[self.counter]
             currentQuestion = self.questionDict[currentQuestionKey]
 
-            # Medyo nakakalito, but based to so dictionary
+            # Medyo nakakalito, but based toh so dictionary
             self.labelQuestion.config(text=currentQuestion['question'])
 
             # Update buttons appropriate commands... because earlier, the commands were set to the first question only
@@ -200,8 +196,7 @@ class GameWindow(Tk):
             
             # Repack shuffled buttons with updated commands
             for btn, text, correct in newButtons:
-                btn.config(text=text, 
-                          command=lambda c=correct: self.checkAnswer(c))
+                btn.config(text=text, command=lambda c=correct: self.checkAnswer(c))
                 btn.pack(fill=X)
     
         except IndexError:
