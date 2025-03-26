@@ -1,0 +1,50 @@
+What does CPU stand for?;Central Processing Unit;Computer Processing Unit;Central Process Utility;Core Processing Unit  
+Which programming language is known as the "mother of all languages"?;C;Python;Java;Pascal  
+What is the main function of an operating system?;Manage hardware and software resources;Run only applications;Enhance internet speed;Prevent computer viruses  
+Which of the following is an example of system software?;Operating System;Microsoft Word;Web Browser;Video Editor  
+What does HTTP stand for?;HyperText Transfer Protocol;HyperText Transmission Process;Hyper Transfer Text Protocol;Hyperlink Transfer Protocol  
+Which company developed the Java programming language?;Sun Microsystems;Microsoft;IBM;Google  
+What does RAM stand for?;Random Access Memory;Read-Only Memory;Remote Access Module;Rapid Application Management  
+What is the binary equivalent of the decimal number 10?;1010;1001;1100;1110  
+What is the main purpose of a firewall?;Protect networks from unauthorized access;Speed up internet connection;Optimize hard drive performance;Enhance graphic processing  
+Which key combination is used to copy in Windows?;Ctrl + C;Ctrl + X;Ctrl + V;Ctrl + Z  
+What type of malware replicates itself and spreads to other computers?;Worm;Trojan Horse;Spyware;Adware  
+What is the default file extension of an Excel file?;.xlsx;.xls;.csv;.docx  
+Who is known as the father of the computer?;Charles Babbage;Alan Turing;Bill Gates;Steve Jobs  
+Which of these is a relational database management system?;MySQL;MongoDB;Redis;Elasticsearch  
+What does IP stand for in networking?;Internet Protocol;Internal Processing;Information Packet;Internet Port  
+Which component is considered the "brain" of a computer?;CPU;RAM;Hard Drive;GPU  
+What is the purpose of DNS?;Translate domain names into IP addresses;Encrypt network connections;Boost internet speed;Manage cloud storage  
+Which is an example of an open-source operating system?;Linux;Windows;macOS;iOS  
+What does SSD stand for?;Solid State Drive;System Storage Device;Software Security Database;Smart Storage Disk  
+Which of the following is NOT a programming language?;HTML;Python;Java;C++  
+What does GUI stand for?;Graphical User Interface;General User Interaction;Global Unified Interface;Graphics Utility Integration  
+What is the full form of URL?;Uniform Resource Locator;Universal Reference Link;Unified Routing Language;Uniform Redirect Link  
+Which of the following is a web browser?;Google Chrome;Windows;Adobe Photoshop;Linux  
+What does VPN stand for?;Virtual Private Network;Visual Processing Node;Video Private Network;Variable Packet Network  
+What is the primary function of an SQL database?;Store and manage structured data;Provide internet access;Render graphics;Run operating systems  
+What does IoT stand for?;Internet of Things;Input Output Technology;Intelligent Online Transfer;Internet of Transactions  
+Which programming language is primarily used for developing iOS apps?;Swift;Java;C#;Python  
+What does HTTPS ensure on websites?;Secure data encryption;Faster loading speed;Higher ranking on search engines;Better user interface  
+Which of these is an example of cloud storage?;Google Drive;CD-ROM;Flash Drive;SSD  
+What is the purpose of an API?;Enable software applications to communicate;Store data in databases;Protect against malware;Enhance computer speed  
+Which file format is commonly used for web images?;JPEG;MP4;PDF;TXT  
+What type of software is Microsoft Word?;Word Processor;Operating System;Database Management System;Web Browser  
+Which of the following is NOT a type of cyberattack?;Wi-Fi Boosting;Phishing;DDoS;Ransomware  
+What is the function of a router?;Directs network traffic;Enhances graphics;Stores user data;Encrypts files  
+What does AI stand for?;Artificial Intelligence;Automated Input;Advanced Internet;Augmented Interface  
+What is the primary language used for web development?;HTML;Python;Java;C++  
+What does CSS stand for in web design?;Cascading Style Sheets;Computer Style Syntax;Creative Styling Structure;Code Style System  
+What is the purpose of a cache?;Speed up data retrieval;Store backup files;Prevent hacking;Enhance security  
+Which of the following is a cybersecurity measure?;Two-Factor Authentication;Increasing RAM;Installing more storage;Adjusting display settings  
+What is the function of a compiler?;Convert source code into machine code;Connect to the internet;Optimize storage;Render images  
+Which company created the Windows operating system?;Microsoft;Apple;IBM;Google  
+What does JPEG stand for?;Joint Photographic Experts Group;Java Picture Enhancement Graphic;Joint Pixel Encoding Guide;Java Processed Enhanced Graphics  
+Which programming language is best for AI development?;Python;C++;Swift;HTML  
+What type of software is Linux?;Operating System;Web Browser;Video Editing Software;Game Engine  
+What is the full form of BIOS?;Basic Input Output System;Binary Internal Operating System;Basic Internet Operating Software;Business Integrated Operating System  
+What is the primary function of an antivirus program?;Detect and remove malware;Enhance network speed;Encrypt files;Improve computer graphics  
+What is an example of a markup language?;HTML;JavaScript;Python;C#  
+Which of these is a primary storage device?;RAM;Hard Drive;Flash Drive;DVD  
+What does LAN stand for?;Local Area Network;Large Access Node;Logical Automated Network;Long Area Network  
+What type of storage is a USB flash drive?;Removable Storage;Cloud Storage;Volatile Memory;Primary Storage
