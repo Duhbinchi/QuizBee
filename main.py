@@ -2,7 +2,6 @@
 Note: Username = TechWizard and Password = admin
 
 TO DO (base requirements): 
-- Add btnQuit in GameWindow
 - Score System
 - Randomize questions order
 
@@ -121,6 +120,7 @@ class GameWindow(Tk):
         # Variables
         self.counter = -1 # Counter for the questions
         self.hp = 5
+        self.score = 0
 
         self.questionDict = {}
         with open('QandA.txt', 'r') as f:
@@ -139,7 +139,7 @@ class GameWindow(Tk):
         self.labelGame = Label(self, bg='maroon')
         self.labelGame.config(image=self.photoGameImage)
 
-        self.gameFrame = Frame(self, bg='orange', width=1005, height=739)
+        self.gameFrame = Frame(self, bg='orange', width=1005, height=739) # Scaling issues depending screen size of the computer
         self.hpLabel = Label(self.gameFrame, bg='orange')
         self.photoHP = PhotoImage(file='hp5.png')
         self.hpLabel.config(image=self.photoHP)
@@ -173,42 +173,38 @@ class GameWindow(Tk):
 
 
     def checkAnswer(self, selectedAnswer):
-        # Check if game is over
-        if self.counter >= 50:
-            self.gameOver(self.hp)
-            return
-
-        # Based sa dictionary
+        # Based on dictionary
         currentQuestion = list(self.questionDict.keys())[self.counter]
         correctAnswer = self.questionDict[currentQuestion]['optA']  # A is always the correct answer
     
         if selectedAnswer == correctAnswer:
             winsound.MessageBeep(winsound.MB_ICONASTERISK)
+            self.score += 1
             self.hp = min(self.hp + 1, 5) # HP cannot exceed 5
         else:
             winsound.MessageBeep(winsound.MB_ICONHAND)
             self.hp = max(self.hp - 1, 0) # HP cannot be negative
     
-        # Check if the game is over
+        # Check if you died
         if self.hp == 0:
             self.healthStatus(self.hp)
             self.gameOver(self.hp)
         else:
-            self.nextQuestion()
+            if self.counter >= 50:
+                self.gameOver(self.hp)
+            else:
+                self.healthStatus(self.hp)
+                self.nextQuestion()
 
-        self.healthStatus(self.hp)
-
-
+        
     def healthStatus(self, hp):
-        # Update the HP image based on the current HP
         try:
+            # Update the HP image based on the current HP
             self.photoHP.config(file=f'hp{hp}.png')  
+            self.hpLabel.config(image=self.photoHP, bg='orange')
         except:
             pass
-            # self.photoHP.config(file='hp0.jpg')  and for some reason, the hp 0 is a jpg file ???
-
-        self.hpLabel.config(image=self.photoHP, bg='orange')
-
+        
 
     def nextQuestion(self):
         self.counter += 1
@@ -250,13 +246,13 @@ class GameWindow(Tk):
             messagebox.showerror("Game Over - Ran out of HP", "You ran out of health points. Game Over.")
         else: # Won
             messagebox.showinfo("Finished!", "You have completed the quiz!")
-            self.showScore()
-
+        
+        self.showScore()
         self.destroy()
 
     
     def showScore(self):
-        pass
+        messagebox.showinfo("Score", f"Your score is {self.score} out of 50.")
 
 
     # Functions for dragging the window
