@@ -48,7 +48,7 @@ class ITQuizBeeLogin(Tk):
         self.entryTxtPw = Entry(self, fg='white', bg='brown', width=28, font=self.inputFont, show="*")  # Hides password input
 
         # Buttons
-        self.btnQuit = Button(self, text='x', command=self.exit, borderwidth=0)
+        self.btnQuit = Button(self, text='X', command=self.exit, borderwidth=0)
         self.btnOk = Button(self, image=self.photoButtonOK, bg='lime', command=self.validate)
         self.bind('<Return>', self.validate)
 
@@ -66,12 +66,6 @@ class ITQuizBeeLogin(Tk):
 
 
     # Functions
-    def exit(self):
-        messagebox.askokcancel("Quit", "Are you sure you want to quit?")
-        if messagebox.askokcancel:
-            self.destroy()
-
-
     def validate(self, event=None): # event=None is for the bind function
         enteredUsername = self.entryTxtUname.get().strip()  
         enteredPassword = self.entryTxtPw.get().strip()    
@@ -102,6 +96,7 @@ class ITQuizBeeLogin(Tk):
 
 
     # Functions for dragging the window
+    # Modify this later so it can inherit from the parent class
     def startMove(self, event):
         self._offset_x = event.x
         self._offset_y = event.y
@@ -111,14 +106,19 @@ class ITQuizBeeLogin(Tk):
         y = self.winfo_pointery() - self._offset_y
         self.geometry(f"+{x}+{y}")
 
+    def exit(self):
+        if messagebox.askokcancel("Quit", "Are you sure you want to quit?"):
+            self.destroy()
 
 class GameWindow(Tk):
     def __init__(self):
         super().__init__()
-        
+        self.overrideredirect(True)
+        self.wm_attributes('-transparentcolor', 'maroon') 
         self.resizable(False, False)
-
         self.title("IT Quiz Bee")
+
+        # Variables
         self.counter = -1 # Counter for the questions
         self.hp = 5
 
@@ -136,7 +136,7 @@ class GameWindow(Tk):
 
         # Images
         self.photoGameImage = PhotoImage(file='bgQuiz50.png')
-        self.labelGame = Label(self, bg='orange')
+        self.labelGame = Label(self, bg='maroon')
         self.labelGame.config(image=self.photoGameImage)
 
         self.gameFrame = Frame(self, bg='orange', width=1005, height=739)
@@ -145,6 +145,7 @@ class GameWindow(Tk):
         self.hpLabel.config(image=self.photoHP)
 
         # Button and Questions
+        self.quitButton = Button(self, text='X', fg='white', font="Times 12 bold", bg='#406e5c', relief="raised",command=self.exit)
         self.labelQuestion = Label(self.gameFrame,  font='Arial 20 bold', fg='white', height=7, bg='orange', justify=CENTER, wraplength=400)
         self.answerButtonA = Button(self.gameFrame, font='Times 18 bold', bg='brown', fg='white', activebackground='lime')
         self.answerButtonB = Button(self.gameFrame, font='Times 18 bold', bg='brown', fg='white', activebackground='red')
@@ -153,10 +154,15 @@ class GameWindow(Tk):
         
         # Placement
         self.labelGame.pack()
-        self.gameFrame.place(x=186, y=65, anchor=NW)
+        self.gameFrame.place(x=186, y=85, anchor=NW)
+        self.quitButton.place(x=922, y=70)
         self.hpLabel.pack(side=TOP)
         self.labelQuestion.pack(side=TOP)
         self.nextQuestion()  # Call nextQuestion to display the first question
+
+        # Extra: Dragging the window
+        self.labelGame.bind("<ButtonPress-1>", self.startMove)
+        self.labelGame.bind("<B1-Motion>", self.doMove)
 
 
     # Functions
@@ -167,6 +173,11 @@ class GameWindow(Tk):
 
 
     def checkAnswer(self, selectedAnswer):
+        # Check if game is over
+        if self.counter >= 50:
+            self.gameOver(self.hp)
+            return
+
         # Based sa dictionary
         currentQuestion = list(self.questionDict.keys())[self.counter]
         correctAnswer = self.questionDict[currentQuestion]['optA']  # A is always the correct answer
@@ -246,6 +257,22 @@ class GameWindow(Tk):
     
     def showScore(self):
         pass
+
+
+    # Functions for dragging the window
+    # Modify this later so it can inherit from the parent class
+    def startMove(self, event):
+        self._offset_x = event.x
+        self._offset_y = event.y
+
+    def doMove(self, event):
+        x = self.winfo_pointerx() - self._offset_x
+        y = self.winfo_pointery() - self._offset_y
+        self.geometry(f"+{x}+{y}")
+
+    def exit(self):
+        if messagebox.askokcancel("Quit", "Are you sure you want to quit?"):
+            self.destroy()
 
         
 if __name__ == "__main__":
