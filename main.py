@@ -2,8 +2,13 @@
 Note: Username = TechWizard and Password = admin
 
 TO DO (base requirements): 
+- Add btnQuit in GameWindow
 - Score System
-- Login Dict should not create the dictionaty inside the validate function, instead create it in the __init__ function
+- Randomize questions order
+
+TO DO (additional requirements):
+- Login Dict should not create the dict inside the validate function, instead create it in the __init__ function
+- Remove Title Bar?
 - Testing
 
 Suggestions / Comments / Questions:
@@ -24,9 +29,14 @@ class ITQuizBeeLogin(Tk):
     def __init__(self):
         super().__init__()
         self.resizable(False, False)
+        self.overrideredirect(True)
+        self.geometry("+100+100")
+
+        # Make the window background transparent as maroon
+        self.wm_attributes('-transparentcolor', 'maroon') 
 
         self.title("Log In")
-        self.labelLog = Label(self)
+        self.labelLog = Label(self, bg='maroon') 
         self.inputFont = ('Arial', 8)
 
         self.photoLogInImage = PhotoImage(file='logIN20.png')
@@ -38,8 +48,13 @@ class ITQuizBeeLogin(Tk):
         self.entryTxtPw = Entry(self, fg='white', bg='brown', width=28, font=self.inputFont, show="*")  # Hides password input
 
         # Buttons
-        self.btnQuit = Button(self, text='x', command=self.exit)
+        self.btnQuit = Button(self, text='x', command=self.exit, borderwidth=0)
         self.btnOk = Button(self, image=self.photoButtonOK, bg='lime', command=self.validate)
+        self.bind('<Return>', self.validate)
+
+        # Extra: Dragging the window
+        self.labelLog.bind("<ButtonPress-1>", self.startMove)
+        self.labelLog.bind("<B1-Motion>", self.doMove)
         self.bind('<Return>', self.validate)
 
         # Placement
@@ -49,11 +64,13 @@ class ITQuizBeeLogin(Tk):
         self.btnQuit.place(x=195, y=30)
         self.btnOk.place(x=97, y=191)
 
+
     # Functions
     def exit(self):
         messagebox.askokcancel("Quit", "Are you sure you want to quit?")
         if messagebox.askokcancel:
             self.destroy()
+
 
     def validate(self, event=None): # event=None is for the bind function
         enteredUsername = self.entryTxtUname.get().strip()  
@@ -83,6 +100,16 @@ class ITQuizBeeLogin(Tk):
         else:
             messagebox.showerror("Login Failed", "Invalid username or password.")
 
+
+    # Functions for dragging the window
+    def startMove(self, event):
+        self._offset_x = event.x
+        self._offset_y = event.y
+
+    def doMove(self, event):
+        x = self.winfo_pointerx() - self._offset_x
+        y = self.winfo_pointery() - self._offset_y
+        self.geometry(f"+{x}+{y}")
 
 
 class GameWindow(Tk):
@@ -119,10 +146,10 @@ class GameWindow(Tk):
 
         # Button and Questions
         self.labelQuestion = Label(self.gameFrame,  font='Arial 20 bold', fg='white', height=7, bg='orange', justify=CENTER, wraplength=400)
-        self.answerButtonA = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='lime')
-        self.answerButtonB = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='red')
-        self.answerButtonC = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='red')
-        self.answerButtonD = Button(self.gameFrame, font='Arial 20 bold', bg='brown', fg='white', activebackground='red')
+        self.answerButtonA = Button(self.gameFrame, font='Times 18 bold', bg='brown', fg='white', activebackground='lime')
+        self.answerButtonB = Button(self.gameFrame, font='Times 18 bold', bg='brown', fg='white', activebackground='red')
+        self.answerButtonC = Button(self.gameFrame, font='Times 18 bold', bg='brown', fg='white', activebackground='red')
+        self.answerButtonD = Button(self.gameFrame, font='Times 18 bold', bg='brown', fg='white', activebackground='red')
         
         # Placement
         self.labelGame.pack()
@@ -192,7 +219,7 @@ class GameWindow(Tk):
 
             random.shuffle(newButtons)
             
-            # Clear old buttons and repack with new commands
+            # Clear old buttons
             oldButtons = [self.answerButtonA, self.answerButtonB, self.answerButtonC, self.answerButtonD]   
             for button in oldButtons:
                 button.pack_forget()
@@ -203,13 +230,14 @@ class GameWindow(Tk):
                 btn.pack(fill=X)
     
         except IndexError:
+            # If the counter exceeds the number of questions, the game is over. The player wins but it's called gameOver because it's the end of the game
             self.gameOver(self.hp)
 
     
     def gameOver(self, hp ):
-        if hp == 0:
+        if hp == 0: # Lost
             messagebox.showerror("Game Over - Ran out of HP", "You ran out of health points. Game Over.")
-        else:
+        else: # Won
             messagebox.showinfo("Finished!", "You have completed the quiz!")
             self.showScore()
 
