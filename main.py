@@ -2,18 +2,16 @@
 Note: Username = TechWizard and Password = admin
 
 TO DO (base requirements): 
-- Score System
-- Randomize questions order
+- Make code more OOP and organized
 
 TO DO (additional requirements):
 - Login Dict should not create the dict inside the validate function, instead create it in the __init__ function
-- Remove Title Bar?
+- Toggle the password visibility when the user clicks a button
 - Testing
 
 Suggestions / Comments / Questions:
-- Make it into OOP-like more in a sense more functions and the code is more organized
-- HP bar has a white space when changed idk why
-- Reason: Some images have transparent background, some don't...
+- Show Player Name and Their Previous Highscore
+- Dynamic Leaderboard
 - Note: "Add kayo dito if you have any suggestions or comments"
 
 """
@@ -29,15 +27,16 @@ class ITQuizBeeLogin(Tk):
         super().__init__()
         self.resizable(False, False)
         self.overrideredirect(True)
-        self.geometry("+100+100")
+        self.geometry("+500+150")
 
-        # Make the window background transparent as maroon
-        self.wm_attributes('-transparentcolor', 'maroon') 
+        # Initialize the login dictionary
+        self.logInDict = self.loadUserAccounts()
 
+        # Make the window background transparent
+        self.wm_attributes('-transparentcolor', 'maroon')
         self.title("Log In")
-        self.labelLog = Label(self, bg='maroon') 
+        self.labelLog = Label(self, bg='maroon')
         self.inputFont = ('Arial', 8)
-
         self.photoLogInImage = PhotoImage(file='logIN20.png')
         self.photoButtonOK = PhotoImage(file='OK20.png')
         self.labelLog.config(image=self.photoLogInImage)
@@ -54,7 +53,6 @@ class ITQuizBeeLogin(Tk):
         # Extra: Dragging the window
         self.labelLog.bind("<ButtonPress-1>", self.startMove)
         self.labelLog.bind("<B1-Motion>", self.doMove)
-        self.bind('<Return>', self.validate)
 
         # Placement
         self.labelLog.pack()
@@ -64,28 +62,28 @@ class ITQuizBeeLogin(Tk):
         self.btnOk.place(x=97, y=191)
 
 
-    # Functions
-    def validate(self, event=None): # event=None is for the bind function
-        enteredUsername = self.entryTxtUname.get().strip()  
-        enteredPassword = self.entryTxtPw.get().strip()    
-
+    def loadUserAccounts(self):
         logInDict = {}
         try:
             with open("UserAccount.txt", "r") as f:
                 for line in f:
                     line = line.strip()
                     parts = line.split(";")
-                    
                     if len(parts) >= 2:
                         username = parts[0].strip()
                         storedPassword = parts[1].strip()
                         logInDict[username] = storedPassword
 
         except FileNotFoundError:
-            messagebox.showerror("Error", "No user accounts found. Please register first.")
-            return
+            messagebox.showerror("Error", "No user accounts found.")
 
-        if enteredUsername in logInDict and logInDict[enteredUsername] == enteredPassword:
+        return logInDict
+
+    def validate(self, event=None):  # event=None is for the bind function
+        enteredUsername = self.entryTxtUname.get().strip()
+        enteredPassword = self.entryTxtPw.get().strip()
+
+        if enteredUsername in self.logInDict and self.logInDict[enteredUsername] == enteredPassword:
             messagebox.showinfo("Login Successful", "Welcome!")
             self.destroy()
             game = GameWindow()
@@ -93,6 +91,9 @@ class ITQuizBeeLogin(Tk):
         else:
             messagebox.showerror("Login Failed", "Invalid username or password.")
 
+    def exit(self):
+        if messagebox.askokcancel("Quit", "Are you sure you want to quit?"):
+            self.destroy()
 
     # Functions for dragging the window
     # Modify this later so it can inherit from the parent class
@@ -133,11 +134,17 @@ class GameWindow(Tk):
                     'optC': lines[3],
                     'optD': lines[4]
                 }
+        
+        # Shuffle the questions
+        questionItems = list(self.questionDict.items()) # turns it into a list so that shuffle can be used
+        random.shuffle(questionItems) 
+        self.questionDict = dict(questionItems) 
 
         # Images
         self.photoGameImage = PhotoImage(file='bgQuiz50.png')
         self.labelGame = Label(self, bg='maroon')
         self.labelGame.config(image=self.photoGameImage)
+        self.scoreLabel = Label(self, text=f"Score: {self.score}", font='Arial 15 bold', bg='#d37537', fg='white', relief="raised")
 
         self.gameFrame = Frame(self, bg='orange', width=1005, height=739) # Scaling issues depending screen size of the computer
         self.hpLabel = Label(self.gameFrame, bg='orange')
@@ -154,6 +161,7 @@ class GameWindow(Tk):
         
         # Placement
         self.labelGame.pack()
+        self.scoreLabel.place(x=73, y=86)
         self.gameFrame.place(x=186, y=85, anchor=NW)
         self.quitButton.place(x=922, y=70)
         self.hpLabel.pack(side=TOP)
@@ -180,6 +188,7 @@ class GameWindow(Tk):
         if selectedAnswer == correctAnswer:
             winsound.MessageBeep(winsound.MB_ICONASTERISK)
             self.score += 1
+            self.scoreLabel.config(text=f"Score: {self.score}")
             self.hp = min(self.hp + 1, 5) # HP cannot exceed 5
         else:
             winsound.MessageBeep(winsound.MB_ICONHAND)
@@ -188,10 +197,10 @@ class GameWindow(Tk):
         # Check if you died
         if self.hp == 0:
             self.healthStatus(self.hp)
-            self.gameOver(self.hp)
+            self.gameFinish(self.hp)
         else:
             if self.counter >= 50:
-                self.gameOver(self.hp)
+                self.gameFinish(self.hp)
             else:
                 self.healthStatus(self.hp)
                 self.nextQuestion()
@@ -207,7 +216,7 @@ class GameWindow(Tk):
         
 
     def nextQuestion(self):
-        self.counter += 1
+        self.counter += 1 # initial vallue is -1 so it will be 0 (first question)
 
         try:
             currentQuestionKey = list(self.questionDict.keys())[self.counter]
@@ -237,11 +246,11 @@ class GameWindow(Tk):
                 btn.pack(fill=X)
     
         except IndexError:
-            # If the counter exceeds the number of questions, the game is over. The player wins but it's called gameOver because it's the end of the game
-            self.gameOver(self.hp)
+            # If the counter exceeds the number of questions, the game is over. The player wins but it's called gameFinish because it's the end of the game
+            self.gameFinish(self.hp)
 
     
-    def gameOver(self, hp ):
+    def gameFinish(self, hp ):
         if hp == 0: # Lost
             messagebox.showerror("Game Over - Ran out of HP", "You ran out of health points. Game Over.")
         else: # Won
