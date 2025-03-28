@@ -5,7 +5,6 @@ TO DO (base requirements):
 - Make code more OOP and organized
 
 TO DO (additional requirements):
-- Login Dict should not create the dict inside the validate function, instead create it in the __init__ function
 - Toggle the password visibility when the user clicks a button
 - Testing
 
