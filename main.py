@@ -201,6 +201,8 @@ class GameWindow(Tk):
                 self.gameFinish(self.hp)
             else:
                 self.nextQuestion()
+    
+        self.healthStatus(self.hp)
 
         
     def healthStatus(self, hp):
