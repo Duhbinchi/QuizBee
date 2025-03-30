@@ -82,44 +82,30 @@ class GameWindow(Tk, DraggableWindow):
             button.pack(fill=X)
 
 
-    def checkAnswer(self, selectedAnswer):
-        # Based on dictionary
-        currentQuestion = list(self.questionDict.keys())[self.counter]
-        correctAnswer = self.questionDict[currentQuestion]['optA']  # A is always the correct answer
-    
-        if selectedAnswer == correctAnswer:
+    def checkAnswer(self, isCorrect):
+        if isCorrect:
             winsound.MessageBeep(winsound.MB_ICONASTERISK)
             self.score += 1
             self.scoreLabel.config(text=f"Score: {self.score}")
-            self.hp = min(self.hp + 1, 5) # HP cannot exceed 5
+            self.hp = min(self.hp + 1, 5)  # HP cannot exceed 5
+            
         else:
             winsound.MessageBeep(winsound.MB_ICONHAND)
-            self.hp = max(self.hp - 1, 0) # HP cannot be negative
+            self.hp = max(self.hp - 1, 0)  # HP cannot be negative
     
-        # Check if you died
+        # Check if the game is over
         if self.hp == 0:
             self.healthStatus(self.hp)
-
-            # Check if the game is over and ask if user wants to retry or destroy the application
-            response = messagebox.askquestion("Game Over", "You ran out of health points. Would you like to retry?")
-            
-            if response == 'yes':
-                # Reset the game variables
-                self.counter = -1 ; self.hp = 5 ; self.score = 0
-                self.scoreLabel.config(text=f"Score: {self.score}")
-                self.healthStatus(self.hp)
-                self.nextQuestion()
-            else:
-                self.gameFinish(self.hp)
-                self.destroy()
+            self.gameFinish(self.hp)
 
         else:
-            if self.counter >= 50:
-                # Check if the player has answered all questions
+            # Check if player answered all questions
+            if self.counter >= 50: 
                 self.gameFinish(self.hp)
             else:
-                self.healthStatus(self.hp)
                 self.nextQuestion()
+    
+        self.healthStatus(self.hp)
 
         
     def healthStatus(self, hp):
@@ -143,7 +129,7 @@ class GameWindow(Tk, DraggableWindow):
 
             # Update buttons appropriate commands... because earlier, the commands were set to the first question only
             newButtons = [
-                (self.answerButtonA, currentQuestion['optA'], True),
+                (self.answerButtonA, currentQuestion['optA'], True), 
                 (self.answerButtonB, currentQuestion['optB'], False),
                 (self.answerButtonC, currentQuestion['optC'], False),
                 (self.answerButtonD, currentQuestion['optD'], False)
@@ -167,16 +153,22 @@ class GameWindow(Tk, DraggableWindow):
 
     
     def gameFinish(self, hp ):
-        if hp == 0: # Lost
-            messagebox.showerror("Game Over - Ran out of HP", "You ran out of health points. Game Over.")
-        else: # Won
-            messagebox.showinfo("Finished!", "You have completed the quiz!")
-        
-        self.showScore()
-        self.destroy()
+        messageTitle = ""
+        scoreMessage = f"Your score is {self.score} out of 50."
 
-    
-    def showScore(self):
-        messagebox.showinfo("Score", f"Your score is {self.score} out of 50.")
+        if hp == 0: # Lost
+            messageTitle = "Game Over! - Ran out of HP"
+        else: # Won
+            messageTitle = "Congratulations! - You answered all questions!"
+
+        # Ask if the player wants to retry
+        response = messagebox.askquestion(messageTitle, f"{scoreMessage}\nWould you like to retry?")
+        if response == 'yes':
+            self.hp = 5 ; self.score = 0 ; self.counter = -1
+            self.scoreLabel.config(text=f"Score: {self.score}")
+            self.healthStatus(self.hp)
+            self.nextQuestion()
+        else:
+            self.destroy()
 
    
