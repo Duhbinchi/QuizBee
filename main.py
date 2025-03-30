@@ -196,9 +196,22 @@ class GameWindow(Tk):
         # Check if you died
         if self.hp == 0:
             self.healthStatus(self.hp)
-            self.gameFinish(self.hp)
+
+            # Check if the game is over and ask if user wants to retry or destroy the application
+            response = messagebox.askquestion("Game Over", "You ran out of health points. Would you like to retry?")
+            if response == 'yes':
+                # Reset the game variables
+                self.counter = -1 ; self.hp = 5 ; self.score = 0
+                self.scoreLabel.config(text=f"Score: {self.score}")
+                self.healthStatus(self.hp)
+                self.nextQuestion()
+            else:
+                self.gameFinish(self.hp)
+                self.destroy()
+
         else:
             if self.counter >= 50:
+                # Check if the player has answered all questions
                 self.gameFinish(self.hp)
             else:
                 self.healthStatus(self.hp)

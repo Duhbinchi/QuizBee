@@ -54,8 +54,8 @@ class GameWindow(Tk, DraggableWindow):
 
     # Functions
     def loadQuestions(self):
-        """Load and shuffle questions from the QandA.txt file."""
         questionDict = {}
+
         try:
             with open('QandA.txt', 'r') as f:
                 for line in f:
@@ -67,7 +67,6 @@ class GameWindow(Tk, DraggableWindow):
                         'optC': lines[3],
                         'optD': lines[4]
                     }
-            # Shuffle the questions
             questionItems = list(questionDict.items())  # Convert to list for shuffling
             random.shuffle(questionItems)
             return dict(questionItems)  # Convert back to dictionary
@@ -100,9 +99,23 @@ class GameWindow(Tk, DraggableWindow):
         # Check if you died
         if self.hp == 0:
             self.healthStatus(self.hp)
-            self.gameFinish(self.hp)
+
+            # Check if the game is over and ask if user wants to retry or destroy the application
+            response = messagebox.askquestion("Game Over", "You ran out of health points. Would you like to retry?")
+            
+            if response == 'yes':
+                # Reset the game variables
+                self.counter = -1 ; self.hp = 5 ; self.score = 0
+                self.scoreLabel.config(text=f"Score: {self.score}")
+                self.healthStatus(self.hp)
+                self.nextQuestion()
+            else:
+                self.gameFinish(self.hp)
+                self.destroy()
+
         else:
             if self.counter >= 50:
+                # Check if the player has answered all questions
                 self.gameFinish(self.hp)
             else:
                 self.healthStatus(self.hp)
@@ -130,10 +143,10 @@ class GameWindow(Tk, DraggableWindow):
 
             # Update buttons appropriate commands... because earlier, the commands were set to the first question only
             newButtons = [
-                (self.answerButtonA, currentQuestion['optA'], currentQuestion['optA']),
-                (self.answerButtonB, currentQuestion['optB'], currentQuestion['optB']),
-                (self.answerButtonC, currentQuestion['optC'], currentQuestion['optC']),
-                (self.answerButtonD, currentQuestion['optD'], currentQuestion['optD'])
+                (self.answerButtonA, currentQuestion['optA'], True),
+                (self.answerButtonB, currentQuestion['optB'], False),
+                (self.answerButtonC, currentQuestion['optC'], False),
+                (self.answerButtonD, currentQuestion['optD'], False)
             ]
 
             random.shuffle(newButtons)
