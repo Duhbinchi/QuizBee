@@ -22,14 +22,29 @@ class ITQuizBeeLogin(Tk, DraggableWindow):
         self.photoButtonOK = PhotoImage(file='OK20.png')
         self.labelLog.config(image=self.photoLogInImage)
 
+        try:
+            self.hidePass = PhotoImage(file='hidePass.png')
+        except:
+            self.hidePass = None
+
         # Name and Password
-        self.entryTxtUname = Entry(self, fg='white', bg='brown', width=28, font=self.inputFont)
-        self.entryTxtPw = Entry(self, fg='white', bg='brown', width=28, font=self.inputFont, show="*")
+        self.txtUname = Entry(self, fg='white', bg='brown', width=28, font=self.inputFont)
+        self.txtPw = Entry(self, fg='white', bg='brown', width=28, font=self.inputFont, show="*")  # Hides password input
 
         # Buttons
         self.btnQuit = Button(self, text='X', command=self.exit, borderwidth=0)
         self.btnOk = Button(self, image=self.photoButtonOK, bg='lime', command=self.validate)
         self.bind('<Return>', self.validate)
+
+        if self.hidePass:
+            self.btnShow = Button(self, image=self.hidePass, bg='brown', width=16, height=16)
+            self.btnShow.place(x=187,y=158)
+        else:
+            self.btnShow = Button(self, text='Show', bg='brown', fg='white')
+            self.btnShow.place(x=170,y=156)
+
+        self.btnShow.bind('<ButtonPress-1>', lambda event: self.show())
+        self.btnShow.bind('<ButtonRelease-1>', lambda event: self.hide())
 
         # Extra: Dragging the window
         self.labelLog.bind("<ButtonPress-1>", self.startMove)
@@ -37,8 +52,8 @@ class ITQuizBeeLogin(Tk, DraggableWindow):
 
         # Placement
         self.labelLog.pack()
-        self.entryTxtUname.place(x=35, y=101)
-        self.entryTxtPw.place(x=35, y=161)
+        self.txtUname.place(x=35, y=101)
+        self.txtPw.place(x=35, y=161)
         self.btnQuit.place(x=195, y=30)
         self.btnOk.place(x=97, y=191)
 
@@ -62,8 +77,8 @@ class ITQuizBeeLogin(Tk, DraggableWindow):
 
 
     def validate(self, event=None):
-        enteredUsername = self.entryTxtUname.get().strip()
-        enteredPassword = self.entryTxtPw.get().strip()
+        enteredUsername = self.txtUname.get().strip()
+        enteredPassword = self.txtPw.get().strip()
 
         if enteredUsername in self._logInDict and self._logInDict[enteredUsername] == enteredPassword:
             messagebox.showinfo("Login Successful", "Welcome!")
@@ -73,3 +88,11 @@ class ITQuizBeeLogin(Tk, DraggableWindow):
 
         else:
             messagebox.showerror("Login Failed", "Invalid username or password.")
+            
+
+    def show(self):
+        self.txtPw.config(show='')
+        
+
+    def hide(self):
+        self.txtPw.config(show='*')

@@ -40,6 +40,11 @@ class ITQuizBeeLogin(Tk):
         self.photoButtonOK = PhotoImage(file='OK20.png')
         self.labelLog.config(image=self.photoLogInImage)
 
+        try:
+            self.hidePass = PhotoImage(file='hidePass.png')
+        except:
+            self.hidePass = None
+
         # Name and Password
         self.entryTxtUname = Entry(self, fg='white', bg='brown', width=28, font=self.inputFont)
         self.entryTxtPw = Entry(self, fg='white', bg='brown', width=28, font=self.inputFont, show="*")  # Hides password input
@@ -48,6 +53,16 @@ class ITQuizBeeLogin(Tk):
         self.btnQuit = Button(self, text='X', command=self.exit, borderwidth=0)
         self.btnOk = Button(self, image=self.photoButtonOK, bg='lime', command=self.validate)
         self.bind('<Return>', self.validate)
+
+        if self.hidePass:
+            self.btnShow = Button(self, image=self.hidePass, bg='brown', width=16, height=16)
+            self.btnShow.place(x=187,y=158)
+        else:
+            self.btnShow = Button(self, text='Show', bg='brown')
+            self.btnShow.place(x=170,y=156)
+
+        self.btnShow.bind('<ButtonPress-1>', lambda event: self.show())
+        self.btnShow.bind('<ButtonRelease-1>', lambda event: self.hide())
 
         # Extra: Dragging the window
         self.labelLog.bind("<ButtonPress-1>", self.startMove)
@@ -59,7 +74,7 @@ class ITQuizBeeLogin(Tk):
         self.entryTxtPw.place(x=35, y=161)
         self.btnQuit.place(x=195, y=30)
         self.btnOk.place(x=97, y=191)
-
+        
 
     def loadUserAccounts(self):
         logInDict = {}
@@ -78,6 +93,7 @@ class ITQuizBeeLogin(Tk):
 
         return logInDict
 
+
     def validate(self, event=None):  # event=None is for the bind function
         enteredUsername = self.entryTxtUname.get().strip()
         enteredPassword = self.entryTxtPw.get().strip()
@@ -90,12 +106,20 @@ class ITQuizBeeLogin(Tk):
         else:
             messagebox.showerror("Login Failed", "Invalid username or password.")
 
+
     def exit(self):
         if messagebox.askokcancel("Quit", "Are you sure you want to quit?"):
             self.destroy()
 
-    # Functions for dragging the window
-    # Modify this later so it can inherit from the parent class
+
+    def show(self):
+        self.entryTxtPw.config(show='')
+        
+
+    def hide(self):
+        self.entryTxtPw.config(show='*')
+
+
     def startMove(self, event):
         self._offset_x = event.x
         self._offset_y = event.y
@@ -258,14 +282,15 @@ class GameWindow(Tk):
         else: # Won
             messageTitle = "Congratulations! - You answered all questions!"
 
-        # Ask if the player wants to retrys     
-        response = messagebox.askquestion(messageTitle, f"{scoreMessage}\nWould you like to retry?")
+        # Ask if the player wants to retry
+        response = messagebox.askquestion(messageTitle, "Would you like to retry?")
         if response == 'yes':
             self.hp = 5 ; self.score = 0 ; self.counter = -1
             self.scoreLabel.config(text=f"Score: {self.score}")
             self.healthStatus(self.hp)
             self.nextQuestion()
         else:
+            messagebox.showinfo("Goodbye", f"{scoreMessage}\nThank you for playing!")
             self.destroy()
 
 
